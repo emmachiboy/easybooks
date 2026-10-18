@@ -1,0 +1,92 @@
+{% extends 'layout.html' %}
+
+
+    {% block main %}
+
+     <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+                
+
+  <h1 style="padding: 20px; color: var(--paragraph);">Books in Shelf:</h1>
+    
+  <div class="container">
+    {% for book in books %}
+      <div class="chalet-card">
+        <!-- Chalet Image -->
+        {% if book.image %}
+          <div class="chalet-image">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" loading="lazy" />
+          </div>
+        {% endif %}
+
+        <!-- Card Content -->
+        <div class="chalet-content">
+          <h1>{{ book.title }}</h1>
+
+          <p>{{ book.description|truncatechars:120 }}</p>
+
+          <!-- Tags -->
+          <div class="tags">
+            <span class="tag">🏆 &nbsp; by {{ book.author }}</span>
+          </div>
+
+          <!-- Button -->
+          {% if book.pdf %}
+            <a href="{{ book.pdf.url }}"><button class="reserve-btn">Read pdf</button></a>
+          {% else %}
+             {% if book.html %}
+                <a href="{% url 'book:read_book' book.id %}"><button class="reserve-btn">Read Book</button></a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Insert ad after every 3rd book (optional) -->
+      {% if forloop.counter|divisibleby:3 and not forloop.last %}
+        <div class="ad-container" style="width:100%;">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+               data-ad-slot="1234567890"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+      {% endif %}
+
+    {% empty %}
+      <h1>No Books Found</h1>
+
+       <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+                
+    {% endfor %}
+
+     <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+                
+  </div>
+
+{% endblock %}
+

@@ -1,0 +1,172 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block main %}
+
+     <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+                
+    <div class="container" style="padding-top:20px;">
+            <h1 style="color: var(--paragraph); text-align:center; width:100%;">Recommended Books:</h1>
+        </div>
+
+        <div class="container">
+            {% for book in books %}
+                <div class="chalet-card">
+                    {% if book.image %}
+                    <div class="chalet-image">
+                        <img src="{{ book.image.url }}" alt="{{ book.title }}" loading="lazy" />
+                    </div>
+                    {% endif %}
+
+                    <div class="chalet-content">
+                        <h1>{{ book.title }}</h1>
+                        <p>{{ book.description|truncatechars:120 }}</p>
+
+                        <div class="tags">
+                            <span class="tag">🏆 &nbsp; by {{ book.author }}</span>
+                        </div>
+
+                      {% if book.pdf %}
+
+                            <a href="{{ book.pdf.url }}">
+                                <button class="reserve-btn">
+                                    Read Book PDF
+                                </button>
+                            </a>
+
+                        {% elif book.html %}
+
+                            <a
+                                href="{% url 'book:read_book' book.id %}"
+                                class="read-book-link"
+                                data-book-id="{{ book.id }}"
+                            >
+                                <button class="reserve-btn read-book-button">
+                                    Read Book
+                                </button>
+                            </a>
+
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% comment %} <!-- Insert ad after every 3rd book (optional) -->
+                {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                    <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+                {% endif %} {% endcomment %}
+
+            {% empty %}
+                <h1>No Books Found</h1>
+            {% endfor %}
+
+             <!-- Insert ad after every 3rd book (optional) -->
+                
+                    <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+                
+
+            <a href="/search/"><button class="reserve-btn" style="color: var(--background); background-color: var(--paragraph);">-- More Books <i class="fas fa-arrow-right"></i></button></a>
+        </div>
+
+         <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          </div>
+                
+                    
+        <!-- Waitlist Section -->
+        <section class="waitlist" id="waitlist">
+            <div class="waitlist-box">
+                <h2>
+                    Subscribe to Our
+                    <span style="background-color: var(--highlight); padding: 5px; border-radius: 5px; color: var(--background);">Newsletter</span>
+                </h2>
+                <p class="section-sub" style="margin: 0 auto;">Join the first individuals to get new added books notifications.</p>
+                <form id="waitlistForm">
+                    <input type="email" class="waitlistEmail" id="waitlistEmail" placeholder="Enter your email" required />
+                    <button class="waitlistbutton" type="submit"><i class="fas fa-rocket"></i> Join Waitlist</button>
+                </form>
+                <small>✓ Free Early Access &nbsp;&nbsp; ✓ Priority Verification &nbsp;&nbsp; ✓ Launch Benefits</small>
+                <div id="successMessage" class="success-msg">🎉 You're on the list! We'll reach out soon.</div>
+            </div>
+        </section>
+
+         <div class="ad-container" style="width:100%;">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-slot="1234567890"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </div>
+                
+
+
+    <script>
+
+document
+    .querySelectorAll(".read-book-link")
+    .forEach(link => {
+
+        const bookId =
+            link.dataset.bookId;
+
+        const progress =
+            localStorage.getItem(
+                "easybooks_" +
+                bookId +
+                "_progress"
+            );
+
+        const button =
+            link.querySelector(
+                ".read-book-button"
+            );
+
+
+        if (
+            progress &&
+            parseInt(progress) > 0
+        ) {
+
+            button.textContent =
+                "Continue Reading • "
+                + progress
+                + "%";
+
+        }
+
+    });
+
+</script>
+{% endblock %}
+

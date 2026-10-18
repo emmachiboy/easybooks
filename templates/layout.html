@@ -1,0 +1,648 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block meta_description %}EasyBooks – Discover and read free books online. Browse our collection of recommended titles, subscribe for updates.{% endblock %}" />
+    <meta name="keywords" content="books, free books, online reading, ebooks, EasyBooks" />
+    <meta name="author" content="EasyBooks" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="{% block og_title %}EasyBooks – Read Free Books Online{% endblock %}" />
+    <meta property="og:description" content="{% block og_description %}Explore our curated collection of recommended books. Read PDFs and online content for free.{% endblock %}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:image" content="{% static 'images/logo.png' %}" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{% block twitter_title %}EasyBooks – Free Online Books{% endblock %}" />
+    <meta name="twitter:description" content="{% block twitter_description %}Read free books online. Subscribe for new additions.{% endblock %}" />
+    <meta name="twitter:image" content="{% static 'images/logo.png' %}" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+    
+    <!-- Font Awesome 6 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    
+    <!-- Google AdSense (Replace with your publisher ID) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    
+    <title>{% block title %}EasyBooks – Read Free Books Online{% endblock %}</title>
+    
+    <style>
+        :root {
+            --background: #f3f0ec;
+            --text: #1e1a17;
+            --paragraph: #7a7269;
+            --highlight: #9e2b2b;
+        }
+        
+        /* Basic Reset & Global Styles */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: var(--background);
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Header & Navigation */
+        header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--highlight);
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            height: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        
+        .logo img {
+            width: 150px;
+            height: auto;
+        }
+        
+        #Search {
+            flex: 1 1 auto;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .search-form .waitlistEmail {
+            flex: 1;
+            max-width: none;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            padding: 10px 18px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+        
+        #waitlistbutton {
+            border: none;
+            background: var(--background);
+            color: var(--highlight);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        
+        #waitlistbutton:hover {
+            color: var(--background);
+            background: var(--highlight);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+        }
+        
+        nav ul li a {
+            color: var(--background);
+            font-size: 1.1rem;
+            padding: 8px 12px;
+            border-radius: 25px;
+            transition: background 0.3s;
+        }
+        
+        nav ul li a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Ad Container Styles */
+        .ad-container {
+            width: 100%;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .ad-container--header {
+            margin: 0;
+            border: none;
+            background: transparent;
+            padding: 5px;
+        }
+        
+        /* Main Content */
+        main {
+            padding-bottom: 30px;
+        }
+        
+        .container {
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+        
+        .chalet-card {
+            width: 300px;
+            flex: 0 0 300px;
+            overflow: hidden;
+            border-radius: 15px;
+            background: #30331d;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+            transition: transform 0.3s ease;
+        }
+        
+        .chalet-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .chalet-image {
+            width: 100%;
+            height: 330px;
+            overflow: hidden;
+        }
+        
+        .chalet-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .chalet-card:hover .chalet-image img {
+            transform: scale(1.03);
+        }
+        
+        .chalet-content {
+            padding: 15px;
+            background: linear-gradient(to bottom, #55582e, #3d401f 50%, #292c19);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chalet-content h1 {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .chalet-content p {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            flex: 1;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .tag {
+            padding: 8px 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.22);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        
+        .reserve-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            background: #fff;
+            color: #222;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s ease;
+            text-align: center;
+        }
+        
+        .reserve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .reserve-btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* Waitlist Section */
+        .waitlist {
+            padding: 80px 20px;
+            background: var(--background);
+        }
+        
+        .waitlist-box {
+            max-width: 700px;
+            margin: auto;
+            background: whitesmoke;
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+        
+        .waitlist h2 {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        .waitlist form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0 20px;
+        }
+        
+        .waitlistEmail {
+            flex: 1 1 260px;
+            max-width: 400px;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            padding: 14px 22px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+        
+        .waitlistbutton {
+            border: none;
+            background: var(--highlight);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        
+        .waitlistbutton:hover {
+            color: var(--highlight);
+            background: var(--background);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .waitlist small {
+            color: var(--paragraph);
+            display: block;
+        }
+        
+        .success-msg {
+            color: #2d6a4f;
+            font-weight: 500;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--background);
+            padding: 20px 0;
+            border-top: 1px solid #ddd;
+        }
+        
+        #socials-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .socials {
+            width: 220px;
+            height: 50px;
+            background-color: var(--highlight);
+            color: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+        
+        .socials:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--paragraph);
+        }
+        
+        /* Responsive Media Queries */
+        @media (max-width: 1024px) {
+            nav {
+                padding: 8px 15px;
+            }
+            .logo img {
+                width: 120px;
+            }
+            #Search {
+                margin: 0 10px;
+            }
+            .container {
+                padding: 25px;
+                gap: 20px;
+            }
+            .chalet-card {
+                width: 280px;
+                flex: 0 0 280px;
+            }
+            .chalet-image {
+                height: 280px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            nav {
+                flex-wrap: wrap;
+            }
+            .logo {
+                order: 1;
+                flex: 0 0 auto;
+            }
+            #Search {
+                order: 3;
+                flex: 1 1 100%;
+                margin: 10px 0 0;
+            }
+            nav ul {
+                order: 2;
+                margin-left: auto;
+            }
+            .container {
+                padding: 20px;
+                gap: 18px;
+            }
+            .chalet-card {
+                width: calc(50% - 18px);
+                flex: 0 0 calc(50% - 18px);
+                min-width: 220px;
+                max-width: 320px;
+            }
+            .chalet-image {
+                height: 240px;
+            }
+            .waitlist-box {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .logo {
+                text-align: center;
+            }
+            #Search {
+                order: 2;
+                margin: 10px 0;
+            }
+            .search-form {
+                flex-direction: column;
+            }
+            .search-form .waitlistEmail,
+            .search-form #waitlistbutton {
+                width: 100%;
+                border-radius: 25px;
+            }
+            nav ul {
+                order: 3;
+                justify-content: center;
+                width: 100%;
+                padding: 8px 0;
+            }
+            .container {
+                padding: 15px 10px;
+                gap: 15px;
+            }
+            .chalet-card {
+                width: 100%;
+                flex: 0 0 100%;
+                max-width: 380px;
+                margin: 0 auto;
+                border-radius: 20px;
+            }
+            .chalet-image {
+                height: 220px;
+            }
+            .chalet-content h1 {
+                font-size: 1.2rem;
+            }
+            .tag {
+                font-size: 0.7rem;
+                padding: 5px 10px;
+            }
+            .reserve-btn {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+            .waitlist h2 {
+                font-size: 1.5rem;
+            }
+            #socials-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .socials {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .chalet-content h1 {
+                font-size: 1.1rem;
+            }
+            .chalet-content p {
+                font-size: 0.85rem;
+            }
+            .tag {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo" aria-label="EasyBooks Home">
+                <img src="{% static 'images/logo.png' %}" alt="EasyBooks Logo" width="150" height="70" />
+            </a>
+
+            <!-- Search Form -->
+            <div id="Search">
+                <form method="GET" class="search-form" role="search">
+                    <input id="searchInput" class="waitlistEmail" type="text" name="q" placeholder="Search books/authors..." value="{{ request.GET.q }}" />
+                    <button id="waitlistbutton" type="submit">Search</button>
+                </form>
+            </div>
+
+            <!-- Navigation Links -->
+            <div>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search/">BookShelf</a></li>
+                </ul>
+            </div>
+        </nav>
+        
+        <!-- Header Ad Placeholder (Optional) -->
+        <!-- <div class="ad-container ad-container--header">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div> -->
+    </header>
+
+    <main>
+        {% block main %}
+        {% endblock main  %}
+    </main>
+
+    <footer class="footer">
+        <div id="socials-container">
+            <div class="socials">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            <div class="socials">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            <div class="socials">
+                <i class="fab fa-tiktok"></i>
+                <span>Tiktok</span>
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            <div class="socials">
+                <i class="fab fa-facebook"></i>
+                <span>Facebook</span>
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; {% now "Y" %} EasyBooks. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Waitlist Form Submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const waitlistForm = document.getElementById('waitlistForm');
+            const successMsg = document.getElementById('successMessage');
+            if (waitlistForm) {
+                waitlistForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('waitlistEmail').value.trim();
+                    if (email) {
+                        successMsg.style.display = 'block';
+                        waitlistForm.reset();
+                        setTimeout(() => {
+                            successMsg.style.display = 'none';
+                        }, 5000);
+                    }
+                });
+            }
+        });
+    </script>
+    <script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+        crossorigin="anonymous">
+    </script>
+</body>
+</html>

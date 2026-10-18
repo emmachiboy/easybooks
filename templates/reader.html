@@ -1,0 +1,1746 @@
+
+
+{% block main %}
+
+<style>
+
+:root {
+    --reader-bg: #f3f0ec;
+    --reader-text: #1e1a17;
+    --reader-muted: #7a7269;
+    --reader-highlight: #9e2b2b;
+    --reader-border: #ddd5cd;
+    --reader-panel: #ebe6df;
+
+    --reader-font-size: 19px;
+    --reader-line-height: 1.9;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.reader-page {
+    min-height: 100vh;
+    background: var(--reader-bg);
+    color: var(--reader-text);
+}
+
+
+/* =====================================================
+   PROGRESS
+===================================================== */
+
+.reader-progress-track {
+    position: fixed;
+    top: 65px;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: transparent;
+
+    z-index: 2000;
+}
+
+.reader-progress {
+    width: 0%;
+    height: 100%;
+
+    background: var(--reader-highlight);
+
+    transition: width .1s linear;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.reader-toolbar {
+    position: sticky;
+    top: 0;
+
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 22px;
+
+    background: var(--reader-bg);
+
+    border-bottom: 1px solid var(--reader-border);
+
+    z-index: 1500;
+}
+
+.reader-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.reader-back {
+    color: var(--reader-text);
+    text-decoration: none;
+
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.reader-book-name {
+    max-width: 300px;
+
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reader-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reader-btn {
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid var(--reader-border);
+    border-radius: 8px;
+
+    background: transparent;
+    color: var(--reader-text);
+
+    cursor: pointer;
+}
+
+.reader-btn:hover {
+    background: var(--reader-highlight);
+    color: var(--reader-bg);
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.reader-layout {
+    display: grid;
+
+    grid-template-columns: 250px minmax(0, 820px);
+
+    justify-content: center;
+
+    gap: 35px;
+
+    padding: 35px 25px 120px;
+}
+
+
+/* =====================================================
+   TOC
+===================================================== */
+
+.reader-toc {
+    position: sticky;
+
+    top: 100px;
+
+    max-height: calc(100vh - 130px);
+
+    overflow-y: auto;
+}
+
+.reader-toc-title {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    margin-bottom: 15px;
+}
+
+.reader-toc button {
+    display: block;
+
+    width: 100%;
+
+    padding: 7px 9px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--reader-muted);
+
+    text-align: left;
+
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+}
+
+.reader-toc button:hover {
+    background: var(--reader-panel);
+    color: var(--reader-text);
+}
+
+.reader-toc button.active {
+    color: var(--reader-highlight);
+}
+
+
+/* =====================================================
+   READER
+===================================================== */
+
+.reader-main {
+    min-width: 0;
+}
+
+.reader-title {
+    text-align: center;
+
+    margin-bottom: 45px;
+}
+
+.reader-title h1 {
+    margin: 0;
+
+    font-family: Georgia, serif;
+
+    font-size: clamp(34px, 5vw, 55px);
+
+    line-height: 1.1;
+}
+
+.reader-title p {
+    margin-top: 15px;
+
+    font-family: Arial, sans-serif;
+
+    color: var(--reader-muted);
+}
+
+
+/* =====================================================
+   ADVERTISING
+===================================================== */
+
+.reader-ad {
+    width: 100%;
+
+    margin: 25px auto 45px;
+
+    text-align: center;
+}
+
+.reader-ad-label {
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    color: var(--reader-muted);
+
+    opacity: .65;
+
+    margin-bottom: 8px;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.book-content {
+    font-family: Georgia, serif;
+
+    font-size: var(--reader-font-size);
+
+    line-height: var(--reader-line-height);
+
+    transition:
+        font-size .2s ease,
+        line-height .2s ease;
+}
+
+.book-content p {
+    margin-bottom: 1.4em;
+}
+
+.book-content h1,
+.book-content h2,
+.book-content h3,
+.book-content h4 {
+    line-height: 1.3;
+
+    margin-top: 2.5em;
+
+    margin-bottom: 1em;
+}
+
+.book-content h1 {
+    font-size: 2em;
+}
+
+.book-content h2 {
+    font-size: 1.55em;
+}
+
+.book-content h3 {
+    font-size: 1.3em;
+}
+
+.book-content img {
+    max-width: 100%;
+    height: auto;
+
+    display: block;
+
+    margin: 25px auto;
+}
+
+.book-content a {
+    color: var(--reader-highlight);
+}
+
+.book-content blockquote {
+    margin: 30px 0;
+
+    padding-left: 20px;
+
+    border-left: 3px solid var(--reader-highlight);
+
+    color: var(--reader-muted);
+}
+
+.book-content pre {
+    overflow-x: auto;
+}
+
+
+/* SEARCH */
+
+.search-results {
+    margin-top: 15px;
+
+    color: var(--reader-muted);
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12px;
+}
+
+.search-highlight {
+    background: #e7c857;
+
+    color: #1e1a17;
+
+    padding: 1px 2px;
+}
+
+
+/* =====================================================
+   BOTTOM CONTROLS
+===================================================== */
+
+.reader-navigation {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 60px;
+}
+
+.chapter-btn {
+    flex: 1;
+
+    padding: 15px 18px;
+
+    border: 1px solid var(--reader-border);
+
+    border-radius: 10px;
+
+    background: var(--reader-panel);
+
+    color: var(--reader-text);
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+.chapter-btn:last-child {
+    text-align: right;
+}
+
+.chapter-btn:hover {
+    border-color: var(--reader-highlight);
+}
+
+
+/* =====================================================
+   END
+===================================================== */
+
+.reader-end {
+    margin-top: 70px;
+
+    text-align: center;
+
+    font-family: Arial, sans-serif;
+
+    color: var(--reader-muted);
+}
+
+
+/* =====================================================
+   SETTINGS PANEL
+===================================================== */
+
+.settings-panel {
+    position: fixed;
+
+    top: 75px;
+    right: 20px;
+
+    width: 280px;
+
+    background: var(--reader-bg);
+
+    border: 1px solid var(--reader-border);
+
+    border-radius: 12px;
+
+    box-shadow: 0 10px 35px rgba(0,0,0,.15);
+
+    padding: 18px;
+
+    display: none;
+
+    z-index: 1800;
+}
+
+.settings-panel.open {
+    display: block;
+}
+
+.settings-title {
+    font-family: Arial, sans-serif;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+.setting-row {
+    margin-bottom: 18px;
+}
+
+.setting-row label {
+    display: block;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12px;
+
+    color: var(--reader-muted);
+
+    margin-bottom: 8px;
+}
+
+.setting-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.setting-buttons button {
+    flex: 1;
+
+    padding: 8px;
+
+    border: 1px solid var(--reader-border);
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: var(--reader-text);
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+.mobile-bottom-bar {
+    display: none;
+}
+
+
+@media (max-width: 1000px) {
+
+    .reader-layout {
+        display: block;
+
+        max-width: 820px;
+
+        margin: auto;
+    }
+
+    .reader-toc {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .reader-toolbar {
+        height: 58px;
+
+        padding: 0 12px;
+    }
+
+    .reader-progress-track {
+        top: 58px;
+    }
+
+    .reader-book-name {
+        max-width: 130px;
+    }
+
+    .reader-controls .desktop-only {
+        display: none;
+    }
+
+    .reader-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .reader-layout {
+        padding: 30px 18px 90px;
+    }
+
+    .book-content {
+        font-size: 17px;
+        line-height: 1.85;
+    }
+
+    .reader-title h1 {
+        font-size: 34px;
+    }
+
+    .reader-navigation {
+        flex-direction: column;
+    }
+
+    .chapter-btn,
+    .chapter-btn:last-child {
+        text-align: center;
+    }
+
+}
+
+
+/* =====================================================
+   THEME: DARK
+===================================================== */
+
+.reader-page.dark {
+    --reader-bg: #181614;
+    --reader-text: #eee8e2;
+    --reader-muted: #a69d94;
+    --reader-highlight: #b94747;
+    --reader-border: #38332f;
+    --reader-panel: #24201d;
+}
+
+
+/* =====================================================
+   THEME: SEPIA
+===================================================== */
+
+.reader-page.sepia {
+    --reader-bg: #efe2c4;
+    --reader-text: #473a2f;
+    --reader-muted: #806f5d;
+    --reader-highlight: #9e2b2b;
+    --reader-border: #d5c4a2;
+    --reader-panel: #e5d6b7;
+}
+
+</style>
+
+
+<div class="reader-page" id="readerPage">
+
+
+    <!-- TOOLBAR -->
+
+    <header class="reader-toolbar">
+
+        <div class="reader-left">
+
+            <a
+                class="reader-back"
+                href="javascript:history.back()">
+                ← Back
+            </a>
+
+            <span class="reader-book-name">
+                {{ book.title }}
+            </span>
+
+        </div>
+
+
+        <div class="reader-controls">
+
+           
+            
+
+            
+
+            <button
+                class="reader-btn"
+                onclick="toggleSettings()"
+                title="Settings">
+                ⚙
+            </button>
+
+            <button
+                class="reader-btn"
+                onclick="toggleFullscreen()"
+                title="Fullscreen">
+                ⛶
+            </button>
+
+            
+        </div>
+
+    </header>
+
+
+    <!-- PROGRESS -->
+
+    <div class="reader-progress-track">
+
+        <div
+            class="reader-progress"
+            id="progressBar">
+        </div>
+
+    </div>
+
+
+    <!-- SETTINGS -->
+
+    <div
+        class="settings-panel"
+        id="settingsPanel">
+
+        <div class="settings-title">
+            Reading Settings
+        </div>
+
+
+        <div class="setting-row">
+
+            <label>
+                Font size
+            </label>
+
+            <div class="setting-buttons">
+
+                <button onclick="changeFontSize(-1)">
+                    A−
+                </button>
+
+                <button onclick="resetFontSize()">
+                    Reset
+                </button>
+
+                <button onclick="changeFontSize(1)">
+                    A+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <label>
+                Line spacing
+            </label>
+
+            <div class="setting-buttons">
+
+                <button onclick="changeLineHeight(-0.1)">
+                    −
+                </button>
+
+                <button onclick="resetLineHeight()">
+                    Reset
+                </button>
+
+                <button onclick="changeLineHeight(0.1)">
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <label>
+                Reading theme
+            </label>
+
+            <div class="setting-buttons">
+
+                <button onclick="setTheme('light')">
+                    Light
+                </button>
+
+                <button onclick="setTheme('sepia')">
+                    Sepia
+                </button>
+
+                <button onclick="setTheme('dark')">
+                    Dark
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+   
+
+
+    <!-- CONTENT LAYOUT -->
+
+    <div class="reader-layout">
+
+
+        <!-- TABLE OF CONTENTS -->
+
+        <aside
+            class="reader-toc"
+            id="readerTOC">
+
+            <div class="reader-toc-title">
+                Contents
+            </div>
+
+            <div id="tocItems"></div>
+
+        </aside>
+
+
+        <!-- READER -->
+
+        <main class="reader-main">
+
+
+            <!-- TOP AD -->
+
+            <div class="reader-ad">
+
+                <div class="reader-ad-label">
+                    Advertisement
+                </div>
+
+                <ins
+                    class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                    data-ad-slot="YOUR-TOP-SLOT"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true">
+                </ins>
+
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+
+            </div>
+
+
+            <!-- TITLE -->
+
+            <div class="reader-title">
+
+                <h1>
+                    {{ book.title }}
+                </h1>
+
+                {% if book.author %}
+
+                    <p>
+                        by {{ book.author }}
+                    </p>
+
+                {% endif %}
+
+                
+
+            </div>
+
+
+            <!-- SECOND AD -->
+
+            <div class="reader-ad">
+
+                <div class="reader-ad-label">
+                    Advertisement
+                </div>
+
+                <ins
+                    class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                    data-ad-slot="YOUR-TITLE-SLOT"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true">
+                </ins>
+
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+
+            </div>
+
+
+            <!-- BOOK -->
+
+            <article
+                class="book-content"
+                id="bookContent">
+
+                {{ content|safe }}
+
+            </article>
+
+
+            <!-- MIDDLE AD -->
+
+            <div class="reader-ad">
+
+                <div class="reader-ad-label">
+                    Advertisement
+                </div>
+
+                <ins
+                    class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                    data-ad-slot="YOUR-MIDDLE-SLOT"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true">
+                </ins>
+
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+
+            </div>
+
+
+            <!-- CHAPTER NAVIGATION -->
+
+            <div class="reader-navigation">
+
+                <button
+                    class="chapter-btn"
+                    id="previousChapter"
+                    onclick="previousChapter()">
+
+                    ← Previous Chapter
+
+                </button>
+
+                <button
+                    class="chapter-btn"
+                    id="nextChapter"
+                    onclick="nextChapter()">
+
+                    Next Chapter →
+
+                </button>
+
+            </div>
+
+
+            <!-- END -->
+
+            <div class="reader-end">
+                End of book
+            </div>
+
+
+            <!-- BOTTOM AD -->
+
+            <div class="reader-ad">
+
+                <div class="reader-ad-label">
+                    Advertisement
+                </div>
+
+                <ins
+                    class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                    data-ad-slot="YOUR-BOTTOM-SLOT"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true">
+                </ins>
+
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+const readerPage =
+    document.getElementById("readerPage");
+
+const bookContent =
+    document.getElementById("bookContent");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const readingStatus =
+    document.getElementById("readingStatus");
+
+const tocItems =
+    document.getElementById("tocItems");
+
+const bookId =
+    "{{ book.id }}";
+
+const storagePrefix =
+    "easybooks_" + bookId;
+
+
+/* =====================================================
+   FONT SIZE
+===================================================== */
+
+let savedFontSize =
+    localStorage.getItem("easybooks_font_size");
+
+if (savedFontSize) {
+
+    document.documentElement.style.setProperty(
+        "--reader-font-size",
+        savedFontSize + "px"
+    );
+
+}
+
+
+function changeFontSize(amount) {
+
+    let current =
+        parseFloat(
+            getComputedStyle(bookContent).fontSize
+        );
+
+    current += amount;
+
+    current = Math.max(
+        14,
+        Math.min(30, current)
+    );
+
+    document.documentElement.style.setProperty(
+        "--reader-font-size",
+        current + "px"
+    );
+
+    localStorage.setItem(
+        "easybooks_font_size",
+        current
+    );
+}
+
+
+function resetFontSize() {
+
+    document.documentElement.style.setProperty(
+        "--reader-font-size",
+        "19px"
+    );
+
+    localStorage.setItem(
+        "easybooks_font_size",
+        "19"
+    );
+}
+
+
+/* =====================================================
+   LINE HEIGHT
+===================================================== */
+
+let savedLineHeight =
+    localStorage.getItem("easybooks_line_height");
+
+if (savedLineHeight) {
+
+    document.documentElement.style.setProperty(
+        "--reader-line-height",
+        savedLineHeight
+    );
+
+}
+
+
+function changeLineHeight(amount) {
+
+    let current =
+        parseFloat(
+            getComputedStyle(bookContent).lineHeight
+        )
+        /
+        parseFloat(
+            getComputedStyle(bookContent).fontSize
+        );
+
+    current += amount;
+
+    current =
+        Math.max(
+            1.4,
+            Math.min(2.4, current)
+        );
+
+    document.documentElement.style.setProperty(
+        "--reader-line-height",
+        current
+    );
+
+    localStorage.setItem(
+        "easybooks_line_height",
+        current
+    );
+}
+
+
+function resetLineHeight() {
+
+    document.documentElement.style.setProperty(
+        "--reader-line-height",
+        "1.9"
+    );
+
+    localStorage.setItem(
+        "easybooks_line_height",
+        "1.9"
+    );
+}
+
+
+/* =====================================================
+   THEMES
+===================================================== */
+
+function setTheme(theme) {
+
+    readerPage.classList.remove(
+        "dark",
+        "sepia"
+    );
+
+    if (theme === "dark") {
+        readerPage.classList.add("dark");
+    }
+
+    if (theme === "sepia") {
+        readerPage.classList.add("sepia");
+    }
+
+    localStorage.setItem(
+        "easybooks_theme",
+        theme
+    );
+}
+
+
+const savedTheme =
+    localStorage.getItem("easybooks_theme");
+
+if (savedTheme) {
+    setTheme(savedTheme);
+}
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+function toggleSettings() {
+
+    document
+        .getElementById("settingsPanel")
+        .classList.toggle("open");
+
+}
+
+
+/* =====================================================
+   TOC
+===================================================== */
+
+const headings =
+    bookContent.querySelectorAll(
+        "h1, h2, h3, h4"
+    );
+
+
+headings.forEach((heading, index) => {
+
+    const id =
+        "chapter-" + index;
+
+    heading.id = id;
+
+    const button =
+        document.createElement("button");
+
+    button.textContent =
+        heading.innerText.trim();
+
+    button.dataset.target =
+        id;
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(id)
+                .scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+        }
+    );
+
+    tocItems.appendChild(button);
+
+});
+
+
+/* =====================================================
+   CHAPTER NAVIGATION
+===================================================== */
+
+let currentChapter = 0;
+
+
+function updateChapter() {
+
+    if (!headings.length) {
+        return;
+    }
+
+    let closest = 0;
+
+    headings.forEach(
+        (heading, index) => {
+
+            const position =
+                heading.getBoundingClientRect().top;
+
+            if (position <= 150) {
+                closest = index;
+            }
+
+        }
+    );
+
+    currentChapter = closest;
+
+}
+
+
+function previousChapter() {
+
+    updateChapter();
+
+    if (currentChapter > 0) {
+
+        headings[
+            currentChapter - 1
+        ].scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+
+function nextChapter() {
+
+    updateChapter();
+
+    if (
+        currentChapter <
+        headings.length - 1
+    ) {
+
+        headings[
+            currentChapter + 1
+        ].scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+
+/* =====================================================
+   ACTIVE TOC
+===================================================== */
+
+function updateTOC() {
+
+    updateChapter();
+
+    const buttons =
+        tocItems.querySelectorAll("button");
+
+    buttons.forEach(
+        (button, index) => {
+
+            button.classList.toggle(
+                "active",
+                index === currentChapter
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   READING PROGRESS
+===================================================== */
+
+function updateProgress() {
+
+    const scrollTop =
+        window.scrollY;
+
+    const total =
+        document.documentElement.scrollHeight
+        -
+        window.innerHeight;
+
+    let progress = 0;
+
+    if (total > 0) {
+
+        progress =
+            (scrollTop / total) * 100;
+
+    }
+
+    progress =
+        Math.min(
+            100,
+            Math.max(0, progress)
+        );
+
+
+    progressBar.style.width =
+        progress + "%";
+
+
+    readingStatus.textContent =
+        Math.round(progress) + "% read";
+
+
+    localStorage.setItem(
+        storagePrefix + "_progress",
+        Math.round(progress)
+    );
+
+}
+
+
+/* =====================================================
+   REMEMBER POSITION
+===================================================== */
+
+const savedPosition =
+    localStorage.getItem(
+        storagePrefix + "_position"
+    );
+
+if (savedPosition) {
+
+    setTimeout(() => {
+
+        window.scrollTo({
+            top: parseInt(savedPosition),
+            behavior: "instant"
+        });
+
+    }, 400);
+
+}
+
+
+let positionTimer;
+
+window.addEventListener(
+    "scroll",
+    () => {
+
+        clearTimeout(positionTimer);
+
+        positionTimer =
+            setTimeout(() => {
+
+                localStorage.setItem(
+                    storagePrefix + "_position",
+                    window.scrollY
+                );
+
+            }, 250);
+
+        updateProgress();
+        updateTOC();
+
+    }
+);
+
+
+/* =====================================================
+   BOOKMARK
+===================================================== */
+
+function toggleBookmark() {
+
+    const currentPosition =
+        window.scrollY;
+
+    const bookmarks =
+        JSON.parse(
+            localStorage.getItem(
+                storagePrefix + "_bookmarks"
+            ) || "[]"
+        );
+
+
+    const existing =
+        bookmarks.findIndex(
+            item =>
+                Math.abs(
+                    item.position -
+                    currentPosition
+                ) < 200
+        );
+
+
+    if (existing >= 0) {
+
+        bookmarks.splice(
+            existing,
+            1
+        );
+
+    } else {
+
+        bookmarks.push({
+
+            position:
+                currentPosition,
+
+            progress:
+                Math.round(
+                    (window.scrollY /
+                    (
+                        document.documentElement.scrollHeight
+                        - window.innerHeight
+                    )) * 100
+                ),
+
+            created:
+                new Date().toISOString()
+
+        });
+
+    }
+
+
+    localStorage.setItem(
+        storagePrefix + "_bookmarks",
+        JSON.stringify(bookmarks)
+    );
+
+
+    alert(
+        existing >= 0
+            ? "Bookmark removed."
+            : "Bookmark saved."
+    );
+
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+function toggleSearch() {
+
+    document
+        .getElementById("searchPanel")
+        .classList.toggle("open");
+
+    document
+        .getElementById("bookSearch")
+        .focus();
+
+}
+
+
+const searchInput =
+    document.getElementById("bookSearch");
+
+
+searchInput.addEventListener(
+    "input",
+    performSearch
+);
+
+
+function clearHighlights() {
+
+    const marks =
+        bookContent.querySelectorAll(
+            ".search-highlight"
+        );
+
+    marks.forEach(mark => {
+
+        const parent =
+            mark.parentNode;
+
+        parent.replaceChild(
+            document.createTextNode(
+                mark.textContent
+            ),
+            mark
+        );
+
+        parent.normalize();
+
+    });
+
+}
+
+
+function performSearch() {
+
+    clearHighlights();
+
+    const query =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    if (!query) {
+
+        document.getElementById(
+            "searchResults"
+        ).textContent = "";
+
+        return;
+    }
+
+
+    let count = 0;
+
+
+    const walker =
+        document.createTreeWalker(
+            bookContent,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode(node) {
+
+                    if (
+                        node.parentElement.closest(
+                            "script,style"
+                        )
+                    ) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }
+        );
+
+
+    const nodes = [];
+
+    let node;
+
+    while (
+        node =
+        walker.nextNode()
+    ) {
+
+        nodes.push(node);
+
+    }
+
+
+    nodes.forEach(textNode => {
+
+        const text =
+            textNode.nodeValue;
+
+        const lower =
+            text.toLowerCase();
+
+        const index =
+            lower.indexOf(query);
+
+
+        if (index === -1) {
+            return;
+        }
+
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        let start = 0;
+
+
+        while (true) {
+
+            const position =
+                lower.indexOf(
+                    query,
+                    start
+                );
+
+            if (position === -1) {
+                break;
+            }
+
+
+            fragment.appendChild(
+                document.createTextNode(
+                    text.slice(
+                        start,
+                        position
+                    )
+                )
+            );
+
+
+            const mark =
+                document.createElement(
+                    "mark"
+                );
+
+            mark.className =
+                "search-highlight";
+
+            mark.textContent =
+                text.slice(
+                    position,
+                    position + query.length
+                );
+
+            fragment.appendChild(mark);
+
+
+            count++;
+
+            start =
+                position + query.length;
+
+        }
+
+
+        fragment.appendChild(
+            document.createTextNode(
+                text.slice(start)
+            )
+        );
+
+
+        textNode.parentNode.replaceChild(
+            fragment,
+            textNode
+        );
+
+    });
+
+
+    document.getElementById(
+        "searchResults"
+    ).textContent =
+        count +
+        " match" +
+        (count === 1 ? "" : "es");
+
+}
+
+
+/* =====================================================
+   FULLSCREEN
+===================================================== */
+
+function toggleFullscreen() {
+
+    if (!document.fullscreenElement) {
+
+        document.documentElement
+            .requestFullscreen()
+            .catch(() => {});
+
+    } else {
+
+        document.exitFullscreen();
+
+    }
+
+}
+
+
+/* =====================================================
+   KEYBOARD SHORTCUTS
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.target.tagName === "INPUT" ||
+            event.target.tagName === "TEXTAREA"
+        ) {
+            return;
+        }
+
+
+        if (event.key === "ArrowRight") {
+
+            nextChapter();
+
+        }
+
+
+        if (event.key === "ArrowLeft") {
+
+            previousChapter();
+
+        }
+
+
+        if (event.key === "f") {
+
+            toggleFullscreen();
+
+        }
+
+
+        if (event.key === "b") {
+
+            toggleBookmark();
+
+        }
+
+
+        if (event.key === "+") {
+
+            changeFontSize(1);
+
+        }
+
+
+        if (event.key === "-") {
+
+            changeFontSize(-1);
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   INITIAL
+===================================================== */
+
+updateProgress();
+updateTOC();
+
+</script>
+
+{% endblock %}
